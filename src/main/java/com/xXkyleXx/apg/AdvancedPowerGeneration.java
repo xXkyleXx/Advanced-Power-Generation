@@ -1,5 +1,6 @@
 package com.xXkyleXx.apg;
 
+import com.xXkyleXx.apg.blocks.ModBlocks;
 import com.xXkyleXx.apg.config.ConfigHandler;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -26,7 +27,7 @@ public class AdvancedPowerGeneration {
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		ConfigHandler.init(event);
-
+		ModBlocks.init();
 	}
 
 	@EventHandler
