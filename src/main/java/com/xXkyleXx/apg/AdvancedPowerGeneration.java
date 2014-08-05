@@ -34,6 +34,8 @@ public class AdvancedPowerGeneration {
 
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
+		
+		CommonProxy.registerTileEntities();
 
 	}
 
