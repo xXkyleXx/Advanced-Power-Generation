@@ -2,8 +2,8 @@ package com.xXkyleXx.apg;
 
 import com.xXkyleXx.apg.blocks.ModBlocks;
 import com.xXkyleXx.apg.config.ConfigHandler;
+import com.xXkyleXx.apg.fluids.ModFluids;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.SidedProxy;
@@ -27,7 +27,9 @@ public class AdvancedPowerGeneration {
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		ConfigHandler.init(event);
+		
 		ModBlocks.init();
+		ModFluids.init();
 	}
 
 	@EventHandler
