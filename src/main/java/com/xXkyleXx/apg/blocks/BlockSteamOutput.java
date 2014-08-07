@@ -19,9 +19,8 @@ public class BlockSteamOutput extends Blockapg implements ITileEntityProvider {
 	
 	@Override
 	public void breakBlock(World world, int x, int y, int z, Block block, int meta) {
-		TileEntitySteamOutput output = (TileEntitySteamOutput) world.getTileEntity(x, y, z);
-		output.notifyOnBreak();
 		super.breakBlock(world, x, y, z, block, meta);
+
 	}
 
 

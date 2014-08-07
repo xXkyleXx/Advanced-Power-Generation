@@ -7,11 +7,17 @@ public class TileEntitySteamOutput extends TileEntity {
 
 	public TileEntityGeothermalPump controlPump;
 	
-	public void notifyOnBreak() {
+	
+	
+	
+	@Override
+	public void invalidate(){
 		if(controlPump != null){
-			controlPump.rebuildValidSteamOutputs();;
+			controlPump.rebuildValidSteamOutputs();
 		}
+		super.invalidate();
 	}
+	
 	
 	
 	@Override

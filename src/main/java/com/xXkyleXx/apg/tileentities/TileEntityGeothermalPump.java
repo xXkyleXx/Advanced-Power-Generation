@@ -45,11 +45,11 @@ public class TileEntityGeothermalPump extends TileEntity {
 
 	public void rebuildValidSteamOutputs() {
 			SteamOutputs = getValidSteamOutputs();
-		
+			notifySteamOutputs();
 	}
 
 
-	private void notifySteamOutputs(){
+	public void notifySteamOutputs(){
 		if(SteamOutputs != null){
 			for(int i = 0; i < SteamOutputs.size(); i++) {
 				SteamOutputs.get(i).controlPump = (TileEntityGeothermalPump) worldObj.getTileEntity(xCoord, yCoord, zCoord);
