@@ -1,10 +1,12 @@
 package com.xXkyleXx.apg.blocks;
 
-import net.minecraft.block.Block;
+import java.util.ArrayList;
+
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
@@ -45,56 +47,30 @@ public class BlockGeothermalPump extends Blockapg implements ITileEntityProvider
 		}
 	}
 	
+	@Override
+	public void onBlockAdded(World world, int x, int y, int z) {
+		TileEntityGeothermalPump pump = (TileEntityGeothermalPump) world.getTileEntity(x, y, z);
+		pump.rebuildValidSteamOutputs();
+	}
 	
 	@Override
-	 public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int par6, float par7, float par8, float par9) {
+	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int par6, float par7, float par8, float par9) {
 		if(!world.isRemote) {
-			TileEntity TE = getClosestSteamOutput(world, x, y, z);
-			System.out.print(TE.xCoord);
+
+			TileEntityGeothermalPump pump = (TileEntityGeothermalPump) world.getTileEntity(x, y, z);
+			//System.out.print("Number of Steam Outputs: "+so.size());
+		    if(pump.SteamOutputs != null) {
+			player.addChatMessage(new ChatComponentText("Number of Steam Outputs: "+pump.SteamOutputs.size()));
 			
-		}
-	    
-		
-			return false;
-	    }
-
-	
-	public TileEntity getClosestSteamOutput(World world, int x, int y, int z){ 
-		
-		
-		double dist = 0;
-		double closest = Integer.MAX_VALUE;
-		TileEntity A = world.getTileEntity(x, y, z);
-		TileEntity B = null;
-		TileEntity C = null;
-		
-		for(int i=0; i<20; i++) {
-			for(int j=0; j<20; j++) {
-				Block block = world.getBlock((x-10)+i, y, (z-10)+j);
-				if (block.hasTileEntity(0)) {
-					TileEntity TE = world.getTileEntity((x-10)+i, y, (z-10)+j);
-					if(TE instanceof TileEntityGeothermalPump) {
-						B = TE;
-						dist = getDistance(A,B);
-						if(dist < closest) { 
-							C = TE;
-						}
-
-
-						//outputs++;
-
-					}
-
-				}
 			}
-		}
-		return C;
+		}	
+
+		
+
+
+		return false;
 	}
 
-	public double getDistance(TileEntity A, TileEntity B) {
-		return Math.sqrt((B.xCoord - A.xCoord)*(B.xCoord - A.xCoord)+(B.yCoord - A.yCoord)*(B.yCoord - A.yCoord)+(B.zCoord - A.yCoord)*(B.zCoord - A.yCoord));
-	}
-	
 	
 	
 	

@@ -8,12 +8,13 @@ import cpw.mods.fml.common.registry.GameRegistry;
 public class ModBlocks {
 
 	public static final Blockapg geothermalPump = new BlockGeothermalPump();
-
+	public static final Blockapg steamOutput = new BlockSteamOutput();
+	
 	public static void init() {
 
 
 
-
+		GameRegistry.registerBlock(steamOutput, "steamOutput");
 		GameRegistry.registerBlock(geothermalPump, "geothermalPump");
 
 	}

@@ -3,6 +3,7 @@ package com.xXkyleXx.apg;
 import com.xXkyleXx.apg.blocks.ModBlocks;
 import com.xXkyleXx.apg.config.ConfigHandler;
 import com.xXkyleXx.apg.fluids.ModFluids;
+import com.xXkyleXx.apg.tileentities.ModTileEntities;
 
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -35,7 +36,7 @@ public class AdvancedPowerGeneration {
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
 		
-		CommonProxy.registerTileEntities();
+		ModTileEntities.init();
 
 	}
 
