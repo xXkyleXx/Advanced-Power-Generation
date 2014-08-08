@@ -1,8 +1,7 @@
 package com.xXkyleXx.apg.tileentities;
 
 import java.util.ArrayList;
-
-import com.xXkyleXx.apg.blocks.ModBlocks;
+import java.util.HashSet;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -11,7 +10,7 @@ import net.minecraft.tileentity.TileEntity;
 public class TileEntityGeothermalPump extends TileEntity {
 	
 	
-	public ArrayList<TileEntitySteamOutput> SteamOutputs;
+	public HashSet<TileEntitySteamOutput> SteamOutputs;
 
 
 	public TileEntityGeothermalPump() {
@@ -24,16 +23,14 @@ public class TileEntityGeothermalPump extends TileEntity {
 	}
 
 
-	public ArrayList getValidSteamOutputs() {
-		ArrayList SO = new ArrayList();
+	public HashSet getValidSteamOutputs() {
+		HashSet SO = new HashSet();
 
 		for(int i=0; i<20; i++) {
 			for(int j=0; j<20; j++) {
 				TileEntity TE = worldObj.getTileEntity((xCoord-10)+i, yCoord, (zCoord-10)+j);
-				if(TE != null && TE instanceof TileEntitySteamOutput) {
-					if(TE.getDistanceFrom(xCoord, yCoord, zCoord) > 25) {
-						SO.add(TE);
-					}
+				if(TE != null && TE instanceof TileEntitySteamOutput && TE.getDistanceFrom(xCoord, yCoord, zCoord) > 25) {
+						SO.add(TE);					
 				}
 			}
 		}
@@ -51,8 +48,8 @@ public class TileEntityGeothermalPump extends TileEntity {
 
 	public void notifySteamOutputs(){
 		if(SteamOutputs != null){
-			for(int i = 0; i < SteamOutputs.size(); i++) {
-				SteamOutputs.get(i).controlPump = (TileEntityGeothermalPump) worldObj.getTileEntity(xCoord, yCoord, zCoord);
+			for(TileEntitySteamOutput outputs: SteamOutputs) {
+				outputs.controlPump = (TileEntityGeothermalPump) worldObj.getTileEntity(xCoord, yCoord, zCoord);
 			}
 		}
 	}

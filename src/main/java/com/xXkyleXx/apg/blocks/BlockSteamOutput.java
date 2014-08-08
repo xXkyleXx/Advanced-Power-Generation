@@ -6,6 +6,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
+import com.xXkyleXx.apg.tileentities.TileEntityGeothermalPump;
 import com.xXkyleXx.apg.tileentities.TileEntitySteamOutput;
 
 public class BlockSteamOutput extends Blockapg implements ITileEntityProvider {
@@ -18,9 +19,13 @@ public class BlockSteamOutput extends Blockapg implements ITileEntityProvider {
 	
 	
 	@Override
-	public void breakBlock(World world, int x, int y, int z, Block block, int meta) {
-		super.breakBlock(world, x, y, z, block, meta);
-
+	public void onBlockAdded(World world, int x, int y, int z) {
+		TileEntitySteamOutput output = (TileEntitySteamOutput) world.getTileEntity(x, y, z);
+		output.setControlPump();
+		TileEntityGeothermalPump pump = output.controlPump;
+		if(pump != null && pump.SteamOutputs != null) {
+		pump.SteamOutputs.add(output);
+		}
 	}
 
 
