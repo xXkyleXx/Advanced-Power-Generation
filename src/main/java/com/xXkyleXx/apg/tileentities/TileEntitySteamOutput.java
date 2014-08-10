@@ -13,7 +13,7 @@ public class TileEntitySteamOutput extends TileEntity {
 	@Override
 	public void invalidate(){
 		if(controlPump != null){
-			controlPump.SteamOutputs.remove(this);
+			controlPump.steamOutputs.remove(this);
 		}
 		super.invalidate();
 	}

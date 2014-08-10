@@ -1,25 +1,35 @@
 package com.xXkyleXx.apg.tileentities;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.util.Constants.NBT;
 
 
 public class TileEntityGeothermalPump extends TileEntity {
 	
+	public boolean needsRebuild = true;
+	private boolean needsLoadFromCoords = false;
 	
-	public HashSet<TileEntitySteamOutput> SteamOutputs;
-
+	public HashSet<TileEntitySteamOutput> steamOutputs = new HashSet();
+	public int[][] steamOutputCoords;
 
 	public TileEntityGeothermalPump() {
-
+		
 	}
 
 	@Override
 	public void updateEntity() {
-
+		if(needsRebuild){
+			rebuildValidSteamOutputs();
+			needsRebuild = false;
+		}
+		if(needsLoadFromCoords){
+			loadFromCoords();
+			needsLoadFromCoords = false;
+		}
 	}
 
 
@@ -30,30 +40,62 @@ public class TileEntityGeothermalPump extends TileEntity {
 			for(int j=0; j<20; j++) {
 				TileEntity TE = worldObj.getTileEntity((xCoord-10)+i, yCoord, (zCoord-10)+j);
 				if(TE != null && TE instanceof TileEntitySteamOutput && TE.getDistanceFrom(xCoord, yCoord, zCoord) > 25) {
+					TileEntitySteamOutput output = (TileEntitySteamOutput) TE;
+					if(output.controlPump == null){
 						SO.add(TE);					
+					}
 				}
 			}
 		}
 
-
 		return SO;
+		}
+
+
+	public int getAverageHieght() {
+		return 1;
+		
 	}
-
-
+	
+	
+	
 	public void rebuildValidSteamOutputs() {
-			SteamOutputs = getValidSteamOutputs();
+			steamOutputs = getValidSteamOutputs();
 			notifySteamOutputs();
 	}
 
 
-	public void notifySteamOutputs(){
-		if(SteamOutputs != null){
-			for(TileEntitySteamOutput outputs: SteamOutputs) {
-				outputs.controlPump = (TileEntityGeothermalPump) worldObj.getTileEntity(xCoord, yCoord, zCoord);
+	public void getSteamOutputCoords() {
+		steamOutputCoords = new int[steamOutputs.size()][3];
+		for(TileEntitySteamOutput outputs: steamOutputs){
+			for(int i=0; i<steamOutputs.size(); i++){
+				steamOutputCoords[i][0] = outputs.xCoord; 
+				steamOutputCoords[i][1] = outputs.yCoord;
+				steamOutputCoords[i][2] = outputs.zCoord;
 			}
 		}
 	}
-
+	
+	public void loadFromCoords() {
+		if(steamOutputCoords != null) {
+			for(int i=0; i<steamOutputCoords.length; i++){
+				int	x = steamOutputCoords[i][0];
+				int	y = steamOutputCoords[i][1];
+				int	z = steamOutputCoords[i][2];
+				steamOutputs.add((TileEntitySteamOutput) worldObj.getTileEntity(x, y, z));
+			}
+		}
+	}
+	
+	public void notifySteamOutputs(){
+		if(steamOutputs != null){
+			for(TileEntitySteamOutput outputs: steamOutputs) {
+				if(outputs.controlPump == null){
+					outputs.controlPump = (TileEntityGeothermalPump) this;
+				}
+			}
+		}
+	}
 
 	 
 	 
@@ -99,12 +141,47 @@ public class TileEntityGeothermalPump extends TileEntity {
 	@Override
 	public void readFromNBT(NBTTagCompound nbtTagCompound) {
         super.readFromNBT(nbtTagCompound);
+        
+        needsRebuild = nbtTagCompound.getBoolean("rebuild");
+        
+         if(nbtTagCompound.hasKey("outputs")) {
+        	NBTTagList tagList = nbtTagCompound.getTagList("outputs", NBT.TAG_COMPOUND);
+        	steamOutputCoords = new int[tagList.tagCount()][3];
+        	for(int i = 0; i < tagList.tagCount(); i++) {
+        		NBTTagCompound tagCompound = tagList.getCompoundTagAt(i);
+        		int x = tagCompound.getInteger("x");
+        		int y = tagCompound.getInteger("y");
+        		int z = tagCompound.getInteger("z");
+        		
+        		steamOutputCoords[i][0] = x; 
+				steamOutputCoords[i][1] = y;
+				steamOutputCoords[i][2] = z;
+				
+				needsLoadFromCoords = true;
+        		
+        	}
+        } 
 	}
 	
-	
+
 	@Override
 	public void writeToNBT(NBTTagCompound nbtTagCompound){
-        super.writeToNBT(nbtTagCompound);
-	}
+		super.writeToNBT(nbtTagCompound);
+		
+		nbtTagCompound.setBoolean("rebuild", needsRebuild);
+		
+			NBTTagList outputs = new NBTTagList();
+			nbtTagCompound.setTag("outputs", outputs);
+
+			for(TileEntitySteamOutput output: steamOutputs) {
+				NBTTagCompound tagCompound = new NBTTagCompound();
+				tagCompound.setInteger("x", output.xCoord);
+				tagCompound.setInteger("y", output.yCoord);
+				tagCompound.setInteger("z", output.zCoord);
+
+				outputs.appendTag(tagCompound);
+			}
+		}
 	
 }
+	

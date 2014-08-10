@@ -49,8 +49,8 @@ public class BlockGeothermalPump extends Blockapg implements ITileEntityProvider
 	
 	@Override
 	public void onBlockAdded(World world, int x, int y, int z) {
-		TileEntityGeothermalPump pump = (TileEntityGeothermalPump) world.getTileEntity(x, y, z);
-		pump.rebuildValidSteamOutputs();
+		//TileEntityGeothermalPump pump = (TileEntityGeothermalPump) world.getTileEntity(x, y, z);
+		//pump.rebuildValidSteamOutputs();
 	}
 	
 	@Override
@@ -58,9 +58,9 @@ public class BlockGeothermalPump extends Blockapg implements ITileEntityProvider
 		if(!world.isRemote) {
 
 			TileEntityGeothermalPump pump = (TileEntityGeothermalPump) world.getTileEntity(x, y, z);
-			//System.out.print("Number of Steam Outputs: "+so.size());
-		    if(pump.SteamOutputs != null) {
-			player.addChatMessage(new ChatComponentText("Number of Steam Outputs: "+pump.SteamOutputs.size()));
+		    if(pump.steamOutputs != null) {
+			player.addChatMessage(new ChatComponentText("Number of Steam Outputs: "+pump.steamOutputs.size()));
+			player.addChatMessage(new ChatComponentText("Ground level:"+pump.getAverageHieght()));
 			
 			}
 		}	
