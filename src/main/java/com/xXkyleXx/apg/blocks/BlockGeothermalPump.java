@@ -11,6 +11,7 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
 import com.xXkyleXx.apg.tileentities.TileEntityGeothermalPump;
+import com.xXkyleXx.apg.tileentities.TileEntitySteamOutput;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -51,6 +52,10 @@ public class BlockGeothermalPump extends Blockapg implements ITileEntityProvider
 	public void onBlockAdded(World world, int x, int y, int z) {
 		//TileEntityGeothermalPump pump = (TileEntityGeothermalPump) world.getTileEntity(x, y, z);
 		//pump.rebuildValidSteamOutputs();
+		//for(TileEntitySteamOutput outputs: pump.steamOutputs) {
+		//outputs.controlPump.add(pump); 
+		
+		//}
 	}
 	
 	@Override

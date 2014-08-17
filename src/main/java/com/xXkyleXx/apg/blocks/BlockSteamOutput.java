@@ -23,7 +23,9 @@ public class BlockSteamOutput extends Blockapg implements ITileEntityProvider {
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int par6, float par7, float par8, float par9) {
 		if(!world.isRemote) {
-			player.addChatMessage(new ChatComponentText("x: " + x + "y: " + y + "z: " + z));
+			TileEntitySteamOutput output = (TileEntitySteamOutput) world.getTileEntity(x, y, z);
+			player.addChatMessage(new ChatComponentText("x:" + x + " y:" + y + " z:" + z));
+			player.addChatMessage(new ChatComponentText("Number of Pumps: "+ output.controlPump.size()));
 			
 			}
 		return false;
@@ -33,10 +35,9 @@ public class BlockSteamOutput extends Blockapg implements ITileEntityProvider {
 	@Override
 	public void onBlockAdded(World world, int x, int y, int z) {
 		TileEntitySteamOutput output = (TileEntitySteamOutput) world.getTileEntity(x, y, z);
-		output.setControlPump();
-		TileEntityGeothermalPump pump = output.controlPump;
-		if(pump != null && pump.steamOutputs != null) {
-		pump.steamOutputs.add(output);
+		output.setControlPumps();
+		for(TileEntityGeothermalPump pumps: output.controlPump) {
+		pumps.steamOutputs.add(output);
 		
 		}
 	}

@@ -20,6 +20,19 @@ public class TileEntityGeothermalPump extends TileEntity {
 		
 	}
 
+	
+	@Override
+	public void invalidate(){
+		if(steamOutputs != null){
+			for(TileEntitySteamOutput outputs: steamOutputs) {
+				outputs.controlPump.remove(this);
+			}
+		}
+		super.invalidate();
+	}
+	
+	
+	
 	@Override
 	public void updateEntity() {
 		if(needsRebuild){
@@ -41,9 +54,8 @@ public class TileEntityGeothermalPump extends TileEntity {
 				TileEntity TE = worldObj.getTileEntity((xCoord-10)+i, yCoord, (zCoord-10)+j);
 				if(TE != null && TE instanceof TileEntitySteamOutput && TE.getDistanceFrom(xCoord, yCoord, zCoord) > 25) {
 					TileEntitySteamOutput output = (TileEntitySteamOutput) TE;
-					if(output.controlPump == null){
-						SO.add(TE);					
-					}
+					
+						SO.add(TE);										
 				}
 			}
 		}
@@ -53,7 +65,7 @@ public class TileEntityGeothermalPump extends TileEntity {
 
 
 	public int getAverageHieght() {
-		return 1;
+		return worldObj.provider.getAverageGroundLevel();
 		
 	}
 	
@@ -90,11 +102,11 @@ public class TileEntityGeothermalPump extends TileEntity {
 	public void notifySteamOutputs(){
 		if(steamOutputs != null){
 			for(TileEntitySteamOutput outputs: steamOutputs) {
-				if(outputs.controlPump == null){
-					outputs.controlPump = (TileEntityGeothermalPump) this;
-				}
+				if(outputs.controlPump != null){
+				outputs.controlPump.add(this);
 			}
 		}
+	}
 	}
 
 	 
