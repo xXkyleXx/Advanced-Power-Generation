@@ -19,7 +19,9 @@ public class TileEntityGeothermalPump extends TileEntity implements IFluidHandle
 
 	public boolean needsRebuild = true;
 	private boolean needsLoadFromCoords = false;
-
+	
+	public int validPipeLength = 0;
+	
 	public HashSet<TileEntitySteamOutput> steamOutputs = new HashSet();
 	public int[][] steamOutputCoords;
 	public FluidTank fluidTank = new FluidTank(10000);
@@ -47,6 +49,12 @@ public class TileEntityGeothermalPump extends TileEntity implements IFluidHandle
 		if (needsLoadFromCoords) {
 			loadFromCoords();
 			needsLoadFromCoords = false;
+		}
+		if (worldObj.getWorldTime() % 200 == 0) {
+			validPipeLength = getValidPipeLength();
+		}
+		if() {
+			
 		}
 	}
 

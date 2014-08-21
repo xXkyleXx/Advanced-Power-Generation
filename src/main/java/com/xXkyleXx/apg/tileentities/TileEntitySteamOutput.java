@@ -6,6 +6,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.fluids.FluidTank;
 
 public class TileEntitySteamOutput extends TileEntity {
 
@@ -15,7 +16,7 @@ public class TileEntitySteamOutput extends TileEntity {
 	
 	public HashSet<TileEntityGeothermalPump> controlPump = new HashSet();
 	public int[][] geothermalPumpCoords;
-	
+	public FluidTank fluidTank = new FluidTank(10000);
 	
 	public void updateEntity(){
 		if(needsLoadFromCoords){
