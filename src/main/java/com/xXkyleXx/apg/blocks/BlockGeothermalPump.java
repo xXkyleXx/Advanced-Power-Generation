@@ -66,7 +66,7 @@ public class BlockGeothermalPump extends Blockapg implements ITileEntityProvider
 		    if(pump.steamOutputs != null) {
 			player.addChatMessage(new ChatComponentText("Number of Steam Outputs: "+pump.steamOutputs.size()));
 			player.addChatMessage(new ChatComponentText("Ground level:"+pump.getAverageHieght()));
-			player.addChatMessage(new ChatComponentText("Pipe Length:"+pump.getPipeLength()));
+			player.addChatMessage(new ChatComponentText("Valid Pipe Length:"+pump.getValidPipeLength()));
 			player.addChatMessage(new ChatComponentText("Water Level:"+pump.fluidTank.getFluidAmount()));
 			
 			}

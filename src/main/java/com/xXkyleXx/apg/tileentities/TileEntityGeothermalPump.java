@@ -20,11 +20,13 @@ public class TileEntityGeothermalPump extends TileEntity implements IFluidHandle
 	public boolean needsRebuild = true;
 	private boolean needsLoadFromCoords = false;
 	
-	public int validPipeLength = 0;
+	private int validPipeLength = 0;
 	
 	public HashSet<TileEntitySteamOutput> steamOutputs = new HashSet();
 	public int[][] steamOutputCoords;
 	public FluidTank fluidTank = new FluidTank(10000);
+	private int searchSize = 30;
+	private ThreadValidPipeLength thread;
 	
 	public TileEntityGeothermalPump() {
 
@@ -50,12 +52,11 @@ public class TileEntityGeothermalPump extends TileEntity implements IFluidHandle
 			loadFromCoords();
 			needsLoadFromCoords = false;
 		}
-		if (worldObj.getWorldTime() % 200 == 0) {
-			validPipeLength = getValidPipeLength();
+		if (worldObj.getWorldTime() % 100 == 0) {
+			resetThread();
+			thread.start();
 		}
-		if() {
-			
-		}
+
 	}
 
 	public HashSet getValidSteamOutputs() {
@@ -132,12 +133,28 @@ public class TileEntityGeothermalPump extends TileEntity implements IFluidHandle
 		return worldObj.getBlock(xCoord, yCoord - getPipeLength() - 1, zCoord) == ModBlocks.grate;
 	}
 
+	public void setValidPipeLength(int length) {
+		validPipeLength = length;
+	}
+	
 	public int getValidPipeLength() {
+		return validPipeLength;
+	}
+	public int getSearchSize() {
+		return searchSize;
+	}
+	
+	private void resetThread() {
+		thread = new ThreadValidPipeLength(this);
+	}
+	
+	
+	/* public int getValidPipeLength() {
 		if (getPipeLength() > 15 && hasGrate()) {
 			int length = 0;
 			int pipeLength = getPipeLength();
 			for (int i = 1; i < pipeLength; i++) {
-				if (getAirBlocksInLayer(xCoord, yCoord - i, zCoord, 3) < 3 && getAirBlocksInLayer(xCoord, yCoord - i, zCoord, 10) < 50) {
+				if (yCoord - i < 71 && getAirBlocksInLayer(xCoord, yCoord - i, zCoord, 3) < 3 && getAirBlocksInLayer(xCoord, yCoord - i, zCoord, 10) < 50) {
 					length++;
 				}
 
@@ -147,7 +164,8 @@ public class TileEntityGeothermalPump extends TileEntity implements IFluidHandle
 		}
 		return 0;
 	}
-
+	
+	
 	public int getAirBlocksInLayer(int x, int y, int z, int size) {
 		int airBlocks = 0;
 		for (int i = 0; i < size; i++) {
@@ -159,6 +177,7 @@ public class TileEntityGeothermalPump extends TileEntity implements IFluidHandle
 		}
 		return airBlocks;
 	}
+	*/
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbtTagCompound) {
