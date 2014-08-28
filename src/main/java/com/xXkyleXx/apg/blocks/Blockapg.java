@@ -23,7 +23,11 @@ public class Blockapg extends Block {
 
 	public Blockapg() {
 		this(Material.rock);
-		this.setCreativeTab(CreativeTabapg.APG_TAB);
+	}
+	
+	public Blockapg(String name) {
+		this(Material.rock);
+		this.setBlockName(name);
 	}
 
 	@Override
@@ -31,7 +35,7 @@ public class Blockapg extends Block {
 		return String.format("tile.%s%s", AdvancedPowerGeneration.MODID.toLowerCase() + ":", getUnwrappedUnlocalizedName(super.getUnlocalizedName()));
 	}
 
-	protected String getUnwrappedUnlocalizedName(String unlocalizedName) {
+	private String getUnwrappedUnlocalizedName(String unlocalizedName) {
 		return unlocalizedName.substring(unlocalizedName.indexOf(".") + 1);
 	}
 	/*
@@ -48,7 +52,7 @@ public class Blockapg extends Block {
 	}
 
 
-	 protected void dropInventory(World world, int x, int y, int z) {
+	 private void dropInventory(World world, int x, int y, int z) {
 	        TileEntity tileEntity = world.getTileEntity(x, y, z);
 
 	        if (!(tileEntity instanceof IInventory)) {

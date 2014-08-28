@@ -8,25 +8,28 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 
 import com.xXkyleXx.apg.blocks.ModBlocks;
+import com.xXkyleXx.apg.fluids.ModFluids;
 
 public class TileEntityGeothermalPump extends TileEntity implements IFluidHandler {
 
-	public boolean needsRebuild = true;
-	private boolean needsLoadFromCoords = false;
 	
+	private int searchSize = 30;
+	private ThreadValidPipeLength thread;
 	private int validPipeLength = 0;
+	public FluidTank fluidTank = new FluidTank(10000);
+	private int maxTransferRate = 10;
+	//private int updateTime = 10;
 	
 	public HashSet<TileEntitySteamOutput> steamOutputs = new HashSet();
 	public int[][] steamOutputCoords;
-	public FluidTank fluidTank = new FluidTank(10000);
-	private int searchSize = 30;
-	private ThreadValidPipeLength thread;
+	private boolean needsLoadFromCoords = false;
 	
 	public TileEntityGeothermalPump() {
 
@@ -44,17 +47,29 @@ public class TileEntityGeothermalPump extends TileEntity implements IFluidHandle
 
 	@Override
 	public void updateEntity() {
-		if (needsRebuild) {
-			rebuildValidSteamOutputs();
-			needsRebuild = false;
-		}
+		
 		if (needsLoadFromCoords) {
 			loadFromCoords();
 			needsLoadFromCoords = false;
 		}
 		if (worldObj.getWorldTime() % 100 == 0) {
-			resetThread();
-			thread.start();
+			if (getPipeLength() > 15 && hasGrate()) {
+				resetThread();
+				thread.start();
+			}else{
+				validPipeLength = 0;
+			}
+		}
+		if(fluidTank.getFluidAmount() > 0 && steamOutputs.size() > 0) {
+			int drainRate = Math.min(maxTransferRate, fluidTank.getFluidAmount());
+			int fillRate = drainRate / steamOutputs.size();
+			fluidTank.drain(drainRate, true);
+
+			for(TileEntitySteamOutput output: steamOutputs) {
+				Fluid fluid = ModFluids.steam;
+				FluidStack fluidstack = new FluidStack(fluid, fillRate);
+				output.fluidTank.fill(fluidstack, true);
+			}
 		}
 
 	}
@@ -76,10 +91,6 @@ public class TileEntityGeothermalPump extends TileEntity implements IFluidHandle
 		return SO;
 	}
 
-	public int getAverageHieght() {
-		return worldObj.provider.getAverageGroundLevel();
-
-	}
 
 	public void rebuildValidSteamOutputs() {
 		steamOutputs = getValidSteamOutputs();
@@ -149,42 +160,11 @@ public class TileEntityGeothermalPump extends TileEntity implements IFluidHandle
 	}
 	
 	
-	/* public int getValidPipeLength() {
-		if (getPipeLength() > 15 && hasGrate()) {
-			int length = 0;
-			int pipeLength = getPipeLength();
-			for (int i = 1; i < pipeLength; i++) {
-				if (yCoord - i < 71 && getAirBlocksInLayer(xCoord, yCoord - i, zCoord, 3) < 3 && getAirBlocksInLayer(xCoord, yCoord - i, zCoord, 10) < 50) {
-					length++;
-				}
-
-			}
-			return length;
-
-		}
-		return 0;
-	}
-	
-	
-	public int getAirBlocksInLayer(int x, int y, int z, int size) {
-		int airBlocks = 0;
-		for (int i = 0; i < size; i++) {
-			for (int j = 0; j < size; j++) {
-				if (worldObj.isAirBlock(x - (size / 2) + i, y, z - (size / 2) + j)) {
-					airBlocks++;
-				}
-			}
-		}
-		return airBlocks;
-	}
-	*/
-
 	@Override
 	public void readFromNBT(NBTTagCompound nbtTagCompound) {
 		super.readFromNBT(nbtTagCompound);
 
-		needsRebuild = nbtTagCompound.getBoolean("rebuild");
-
+		
 		if (nbtTagCompound.hasKey("outputs")) {
 			NBTTagList tagList = nbtTagCompound.getTagList("outputs", NBT.TAG_COMPOUND);
 			steamOutputCoords = new int[tagList.tagCount()][3];
@@ -208,8 +188,7 @@ public class TileEntityGeothermalPump extends TileEntity implements IFluidHandle
 	public void writeToNBT(NBTTagCompound nbtTagCompound) {
 		super.writeToNBT(nbtTagCompound);
 
-		nbtTagCompound.setBoolean("rebuild", needsRebuild);
-
+	
 		NBTTagList outputs = new NBTTagList();
 		nbtTagCompound.setTag("outputs", outputs);
 
@@ -243,7 +222,7 @@ public class TileEntityGeothermalPump extends TileEntity implements IFluidHandle
 
 	@Override
 	public boolean canFill(ForgeDirection from, Fluid fluid) {
-		if(from == ForgeDirection.UP && fluid.getName() == "water") {
+		if(from.ordinal() == 1 && fluid.getName() == "water") {
 			return true;
 		}
 		return false;

@@ -26,6 +26,7 @@ public class BlockSteamOutput extends Blockapg implements ITileEntityProvider {
 			TileEntitySteamOutput output = (TileEntitySteamOutput) world.getTileEntity(x, y, z);
 			player.addChatMessage(new ChatComponentText("x:" + x + " y:" + y + " z:" + z));
 			player.addChatMessage(new ChatComponentText("Number of Pumps: "+ output.controlPump.size()));
+			player.addChatMessage(new ChatComponentText("Steam Level:"+output.fluidTank.getFluidAmount()));
 			
 			}
 		return false;

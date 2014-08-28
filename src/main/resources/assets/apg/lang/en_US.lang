@@ -1,5 +1,9 @@
-tile.apg:geothermalPump.name=Geothermal Pump
+//tile.apg:geothermalPump.name=Geothermal Pump
 tile.apg:steamOutput.name=Steam Output
 tile.apg:steam.name=Steam
 tile.apg:geothermalPipe.name=Geothermal Pipe
 tile.apg:grate.name=Grate
+tile.apg:geothermalPumpTier1.name=Tier 1
+tile.apg:geothermalPumpTier2.name=Tier 2
+tile.apg:geothermalPumpTier3.name=Tier 3
+fluid.steam=Steam

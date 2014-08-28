@@ -15,18 +15,17 @@ public class ModFluids {
 
 	public static Fluidapg blockSteam;
 
-
 	public static void init() {
 
 		steam = new Fluid("steam").setDensity(-100).setLuminosity(0).setTemperature(1000).setViscosity(200).setGaseous(true);
-
+		
 		//fluids
 		FluidRegistry.registerFluid(steam);
 
 		//fluid blocks
-		blockSteam = new BlockFluidSteam(steam, Material.water);
-		
+		blockSteam = new BlockFluidSteam(steam, Material.water);		
 		
 		GameRegistry.registerBlock(blockSteam, "blockSteam");
+		
 	}
 }

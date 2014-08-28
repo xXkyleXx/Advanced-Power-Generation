@@ -31,6 +31,8 @@ public class BlockFluidSteam extends Fluidapg {
     public void registerBlockIcons(IIconRegister iIconregister) {
             stillIcon = iIconregister.registerIcon("apg:steam_Still");
             flowingIcon = iIconregister.registerIcon("apg:steam_Flowing");
+            
+            fluid.setIcons(stillIcon, flowingIcon);
     }
    
     @Override

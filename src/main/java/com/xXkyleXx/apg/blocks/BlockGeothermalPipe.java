@@ -41,5 +41,4 @@ public class BlockGeothermalPipe extends Blockapg {
 	
 	
 	
-	
 }
