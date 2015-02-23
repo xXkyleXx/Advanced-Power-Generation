@@ -7,6 +7,7 @@ public class ModTileEntities {
 	public static void init() {
 		GameRegistry.registerTileEntity(TileEntityGeothermalPump.class, "geothermalPump");
 		GameRegistry.registerTileEntity(TileEntitySteamOutput.class, "steamOutput");
+		GameRegistry.registerTileEntity(TileEntityRFTest.class, "rfTest");
 	}
 }
 

@@ -13,6 +13,7 @@ public class ModBlocks {
 	public static final Blockapg steamOutput = new BlockSteamOutput();
 	public static final Blockapg geothermalPipe = new BlockGeothermalPipe();
 	public static final Blockapg grate = new BlockGrate();
+	public static final Blockapg rfTest = new BlockRFTest();
 	
 	public static void init() {
 
@@ -22,6 +23,7 @@ public class ModBlocks {
 		GameRegistry.registerBlock(geothermalPump, ItemBlockGeothermalPump.class, "geothermalPump");
 		GameRegistry.registerBlock(geothermalPipe, "geothermalPipe");
 		GameRegistry.registerBlock(grate, "grate");
+		GameRegistry.registerBlock(rfTest, "rfTest");
 	}
 
 }

@@ -19,18 +19,18 @@ import com.xXkyleXx.apg.fluids.ModFluids;
 
 public class TileEntityGeothermalPump extends TileEntity implements IFluidHandler {
 
-	
+
 	private int searchSize = 30;
 	private ThreadValidPipeLength thread;
 	private int validPipeLength = 0;
 	public FluidTank fluidTank = new FluidTank(10000);
 	private int maxTransferRate = 10;
 	//private int updateTime = 10;
-	
+
 	public HashSet<TileEntitySteamOutput> steamOutputs = new HashSet();
 	public int[][] steamOutputCoords;
 	private boolean needsLoadFromCoords = false;
-	
+
 	public TileEntityGeothermalPump() {
 
 	}
@@ -47,7 +47,7 @@ public class TileEntityGeothermalPump extends TileEntity implements IFluidHandle
 
 	@Override
 	public void updateEntity() {
-		
+
 		if (needsLoadFromCoords) {
 			loadFromCoords();
 			needsLoadFromCoords = false;
@@ -63,15 +63,17 @@ public class TileEntityGeothermalPump extends TileEntity implements IFluidHandle
 		if(fluidTank.getFluidAmount() > 0 && steamOutputs.size() > 0) {
 			int drainRate = Math.min(maxTransferRate, fluidTank.getFluidAmount());
 			int fillRate = drainRate / steamOutputs.size();
-			fluidTank.drain(drainRate, true);
 
 			for(TileEntitySteamOutput output: steamOutputs) {
-				Fluid fluid = ModFluids.steam;
-				FluidStack fluidstack = new FluidStack(fluid, fillRate);
-				output.fluidTank.fill(fluidstack, true);
+				if(fillRate <= output.fluidTank.getCapacity() - output.fluidTank.getFluidAmount()) {
+					fluidTank.drain(drainRate, true);
+					Fluid fluid = ModFluids.steam;
+					FluidStack fluidstack = new FluidStack(fluid, fillRate);
+					output.fluidTank.fill(fluidstack, true);
+				}
 			}
-		}
 
+		}
 	}
 
 	public HashSet getValidSteamOutputs() {
@@ -147,24 +149,24 @@ public class TileEntityGeothermalPump extends TileEntity implements IFluidHandle
 	public void setValidPipeLength(int length) {
 		validPipeLength = length;
 	}
-	
+
 	public int getValidPipeLength() {
 		return validPipeLength;
 	}
 	public int getSearchSize() {
 		return searchSize;
 	}
-	
+
 	private void resetThread() {
 		thread = new ThreadValidPipeLength(this);
 	}
-	
-	
+
+
 	@Override
 	public void readFromNBT(NBTTagCompound nbtTagCompound) {
 		super.readFromNBT(nbtTagCompound);
 
-		
+
 		if (nbtTagCompound.hasKey("outputs")) {
 			NBTTagList tagList = nbtTagCompound.getTagList("outputs", NBT.TAG_COMPOUND);
 			steamOutputCoords = new int[tagList.tagCount()][3];
@@ -188,7 +190,7 @@ public class TileEntityGeothermalPump extends TileEntity implements IFluidHandle
 	public void writeToNBT(NBTTagCompound nbtTagCompound) {
 		super.writeToNBT(nbtTagCompound);
 
-	
+
 		NBTTagList outputs = new NBTTagList();
 		nbtTagCompound.setTag("outputs", outputs);
 
